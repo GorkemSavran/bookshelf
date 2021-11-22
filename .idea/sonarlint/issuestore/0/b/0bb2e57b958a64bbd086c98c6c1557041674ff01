@@ -1,0 +1,6 @@
+
+°
+java:S1130"’Remove the declaration of thrown exception 'org.springframework.security.core.userdetails.UsernameNotFoundException' which is a runtime exception.(žÌÃŸ8žÂ‰òÒ/
+^
+java:S1128
+"<Remove this unused import 'javax.transaction.Transactional'.(ûÒçÑúÿÿÿÿ8ŠÌÂ™Ó/
