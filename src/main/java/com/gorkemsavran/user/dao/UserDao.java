@@ -6,6 +6,11 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,10 +55,20 @@ public class UserDao implements IDao<User> {
     }
 
     public User findByUsername(String username) {
-        List<User> users = entityManager.createQuery("select user from User user where user.username = :username", User.class)
-                .setParameter("username", username)
-                .setMaxResults(1)
-                .getResultList();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaBuilderQuery = criteriaBuilder.createQuery(User.class);
+
+        Root<User> userRoot = criteriaBuilderQuery.from(User.class);
+        Predicate usernamePredicate = criteriaBuilder.equal(userRoot.get("username"), username);
+        criteriaBuilderQuery.where(usernamePredicate);
+
+        TypedQuery<User> query = entityManager.createQuery(criteriaBuilderQuery);
+        List<User> users = query.setMaxResults(1).getResultList();
+
+//                .createQuery("select user from User user where user.username = :username", User.class)
+//                .setParameter("username", username)
+//                .setMaxResults(1)
+//                .getResultList();
         if (!users.isEmpty())
             return users.get(0);
         else
