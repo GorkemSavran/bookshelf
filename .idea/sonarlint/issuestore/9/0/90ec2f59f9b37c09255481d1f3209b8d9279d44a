@@ -1,5 +1,5 @@
 
-k
-java:S1128"IRemove this unused import 'com.gorkemsavran.config.CreateAdminOnStartUp'.(À—ÂÖÿÿÿÿÿ8óË¸šÓ/
 e
 java:S1128"HRemove this unused import 'org.springframework.context.annotation.Bean'.(‚î‰Ş8óË¸šÓ/
+k
+java:S1128"IRemove this unused import 'com.gorkemsavran.config.CreateAdminOnStartUp'.(À—ÂÖÿÿÿÿÿ8óË¸šÓ/

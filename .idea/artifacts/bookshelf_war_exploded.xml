@@ -1,6 +1,14 @@
 <component name="ArtifactManager">
   <artifact type="exploded-war" name="bookshelf:war exploded">
     <output-path>$PROJECT_DIR$/target/bookshelf</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <exploded>true</exploded>
+        <module>bookshelf</module>
+        <packaging>war</packaging>
+        <unpackNestedArchives>false</unpackNestedArchives>
+      </options>
+    </properties>
     <root id="root">
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
@@ -8,7 +16,6 @@
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="Maven: org.springframework:spring-context:5.3.12" />
-          <element id="library" level="project" name="Maven: org.springframework:spring-aop:5.3.12" />
           <element id="library" level="project" name="Maven: org.springframework:spring-beans:5.3.12" />
           <element id="library" level="project" name="Maven: org.springframework:spring-core:5.3.12" />
           <element id="library" level="project" name="Maven: org.springframework:spring-jcl:5.3.12" />
@@ -22,6 +29,7 @@
           <element id="library" level="project" name="Maven: org.springframework.security:spring-security-crypto:5.5.3" />
           <element id="library" level="project" name="Maven: org.springframework.security:spring-security-web:5.5.3" />
           <element id="library" level="project" name="Maven: org.springframework.security:spring-security-config:5.5.3" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-aop:5.3.13" />
           <element id="library" level="project" name="Maven: javax.servlet:jstl:1.2" />
           <element id="library" level="project" name="Maven: io.jsonwebtoken:jjwt-api:0.11.1" />
           <element id="library" level="project" name="Maven: io.jsonwebtoken:jjwt-impl:0.11.1" />
@@ -80,6 +88,7 @@
           <element id="library" level="project" name="Maven: org.jvnet.staxex:stax-ex:1.8.1" />
           <element id="library" level="project" name="Maven: com.sun.xml.fastinfoset:FastInfoset:1.2.16" />
           <element id="library" level="project" name="Maven: org.javassist:javassist:3.25.0-GA" />
+          <element id="library" level="project" name="Maven: org.aspectj:aspectjweaver:1.9.6" />
         </element>
       </element>
       <element id="directory" name="META-INF">

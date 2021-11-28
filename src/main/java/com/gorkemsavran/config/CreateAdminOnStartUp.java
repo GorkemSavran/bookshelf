@@ -25,28 +25,28 @@ public class CreateAdminOnStartUp {
 
     @PostConstruct
     public void init() {
-//        userService.addUser(new User(
-//                "admin",
-//                "admin",
-//                Authority.ROLE_ADMIN,
-//                "admin@gmail.com"
-//        ));
-//
-//        bookService.addBook(new Book(
-//                "rew",
-//                "qq",
-//                BookCategory.ADVENTURE,
-//                LocalDate.now(),
-//                "ewqewq"
-//        ));
-//
-//        bookService.addBook(new Book(
-//                "321",
-//                "qq",
-//                BookCategory.ADVENTURE,
-//                LocalDate.now(),
-//                "ewqewq"
-//        ));
+        userService.addUser(new User(
+                "admin",
+                "admin",
+                Authority.ROLE_ADMIN,
+                "admin@gmail.com"
+        ));
+
+        bookService.addBook(new Book(
+                "rew",
+                "qq",
+                BookCategory.ADVENTURE,
+                LocalDate.now(),
+                "ewqewq"
+        ));
+
+        bookService.addBook(new Book(
+                "321",
+                "qq",
+                BookCategory.ADVENTURE,
+                LocalDate.now(),
+                "ewqewq"
+        ));
     }
 
 }

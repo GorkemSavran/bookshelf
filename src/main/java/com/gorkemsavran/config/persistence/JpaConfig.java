@@ -18,21 +18,6 @@ import java.util.Properties;
 @EnableTransactionManagement
 public class JpaConfig {
 
-//    private static EntityManagerFactory entityManagerFactory;
-//
-//    public static EntityManagerFactory getEntityManagerFactory() {
-//        return entityManagerFactory;
-//    }
-//
-//    static {
-//        entityManagerFactory = Persistence.createEntityManagerFactory("test");
-//    }
-//
-//    @Bean
-//    public EntityManager entityManager() {
-//        return entityManagerFactory.createEntityManager();
-//    }
-
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em

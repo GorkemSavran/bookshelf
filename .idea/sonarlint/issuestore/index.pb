@@ -115,3 +115,7 @@ e
 5src/main/java/com/gorkemsavran/config/TestConfig.java,d\f\df22abe3f61881bcbf572863b6acbb00991b79c3
 i
 9src/test/java/com/gorkemsavran/book/BookServiceTests.java,9\9\99ec2275de780c7ec7c3b0217174a8b82df7b89c
+Z
+*.idea/artifacts/bookshelf_war_exploded.xml,6\1\61a0f9821fb16d8859f7d94b1e1b5d62092928cd
+Y
+)src/main/resources/application.properties,0\6\06f65155ec73600b9fc5c4dc2883d4bb84d8e284

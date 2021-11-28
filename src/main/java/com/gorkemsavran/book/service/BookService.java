@@ -28,7 +28,7 @@ public class BookService {
     }
 
     public Book getBook(Long id) {
-        return bookDao.get(id).orElseThrow(EntityNotFoundException::new);
+        return bookDao.get(id).orElseThrow(() -> new EntityNotFoundException("Book not found!"));
     }
 
     @Transactional

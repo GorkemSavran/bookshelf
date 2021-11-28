@@ -25,7 +25,7 @@ public class UserService {
     }
 
     public User getUser(Long id) {
-        return userDao.get(id).orElseThrow(EntityNotFoundException::new);
+        return userDao.get(id).orElseThrow(() -> new EntityNotFoundException("User not found!"));
     }
 
     @Transactional

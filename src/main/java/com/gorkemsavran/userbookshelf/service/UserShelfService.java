@@ -2,6 +2,7 @@ package com.gorkemsavran.userbookshelf.service;
 
 import com.gorkemsavran.book.dao.BookDao;
 import com.gorkemsavran.book.entity.Book;
+import com.gorkemsavran.common.aspect.PersistUser;
 import com.gorkemsavran.common.response.MessageResponse;
 import com.gorkemsavran.common.response.MessageType;
 import com.gorkemsavran.user.dao.UserDao;
@@ -34,28 +35,28 @@ public class UserShelfService {
     }
 
     @Transactional
+    @PersistUser
     public Set<Shelf> getUserShelfs(User user) {
-        user = userDao.merge(user);
         return user.getShelves();
     }
 
     @Transactional
+    @PersistUser
     public List<Book> getUserShelfBooks(User user, Long shelfId) {
-        user = userDao.merge(user);
         Shelf shelf = user.getShelves().stream().filter(s -> s.getId().equals(shelfId)).findFirst().orElseThrow(EntityNotFoundException::new);
         return new ArrayList<>(shelf.getBooks());
     }
 
     @Transactional
+    @PersistUser
     public MessageResponse addShelf(User user) {
-        user = userDao.merge(user);
         user.getShelves().add(new Shelf(user));
         return new MessageResponse("Shelf added successfuly", MessageType.SUCCESS);
     }
 
     @Transactional
+    @PersistUser
     public MessageResponse deleteShelf(User user, Long shelfId) {
-        user = userDao.merge(user);
         Optional<Shelf> optionalShelf = user.getShelves().stream().filter(shelf -> shelf.getId().equals(shelfId)).findFirst();
         if (!optionalShelf.isPresent())
             return new MessageResponse("Shelf does not exist", MessageType.ERROR);
@@ -64,8 +65,8 @@ public class UserShelfService {
     }
 
     @Transactional
+    @PersistUser
     public MessageResponse addBookToShelf(User user, Long shelfId, Long bookId) {
-        user = userDao.merge(user);
         Optional<UserBook> optionalBook = user.getUserBooks()
                 .stream().filter(userBook -> userBook.getBook().getId().equals(bookId)).findFirst();
         if (!optionalBook.isPresent())
@@ -79,8 +80,8 @@ public class UserShelfService {
     }
 
     @Transactional
+    @PersistUser
     public MessageResponse deleteBookFromShelf(User user, Long shelfId, Long bookId) {
-        user = userDao.merge(user);
         Optional<Book> optionalBook = bookDao.get(bookId);
         if (!optionalBook.isPresent())
             return new MessageResponse("Book does not exist", MessageType.ERROR);

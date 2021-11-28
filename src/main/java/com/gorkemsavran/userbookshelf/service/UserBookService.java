@@ -2,6 +2,7 @@ package com.gorkemsavran.userbookshelf.service;
 
 import com.gorkemsavran.book.dao.BookDao;
 import com.gorkemsavran.book.entity.Book;
+import com.gorkemsavran.common.aspect.PersistUser;
 import com.gorkemsavran.common.response.MessageResponse;
 import com.gorkemsavran.common.response.MessageType;
 import com.gorkemsavran.user.dao.UserDao;
@@ -14,6 +15,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,22 +31,25 @@ public class UserBookService {
     }
 
     @Transactional
+    @PersistUser
     public List<UserBook> getUserBooks(User user) {
-        user = userDao.merge(user);
         return new ArrayList<>(user.getUserBooks());
     }
 
     @Transactional
+    @PersistUser
     public List<UserBook> getUserReviews(User user) {
-        user = userDao.merge(user);
-        return user.getUserBooks().stream().filter(userBook -> userBook.getReview() != null && userBook.getRating() != null)
+        return user.getUserBooks().stream().filter(this::existUserBookReview)
                 .collect(Collectors.toList());
     }
 
-    @Transactional
-    public MessageResponse addBookToUserBooks(User user, Long bookId) {
-        user = userDao.merge(user);
+    private boolean existUserBookReview(UserBook userBook) {
+        return userBook.getReview() != null && userBook.getRating() != null;
+    }
 
+    @Transactional
+    @PersistUser
+    public MessageResponse addBookToUserBooks(User user, Long bookId) {
         Optional<Book> optionalBook = bookDao.get(bookId);
         if (!optionalBook.isPresent())
             return new MessageResponse("Book does not exist", MessageType.ERROR);
@@ -55,9 +60,8 @@ public class UserBookService {
     }
 
     @Transactional
+    @PersistUser
     public MessageResponse removeBookFromUserBooks(User user, Long bookId) {
-        user = userDao.merge(user);
-
         Optional<Book> optionalBook = bookDao.get(bookId);
         if (!optionalBook.isPresent())
             return new MessageResponse("Book does not exist!", MessageType.ERROR);
@@ -70,8 +74,8 @@ public class UserBookService {
     }
 
     @Transactional
+    @PersistUser
     public MessageResponse addReviewAndRatingToBook(User user, Long bookId, AddReviewAndRatingDTO addReviewAndRatingDTO) {
-        user = userDao.merge(user);
         Optional<Book> optionalBook = bookDao.get(bookId);
 
         if (!optionalBook.isPresent())

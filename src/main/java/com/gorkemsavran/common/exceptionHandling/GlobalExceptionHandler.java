@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = {EntityNotFoundException.class})
     protected ResponseEntity<MessageResponse> handleConflict(EntityNotFoundException ex) {
-        return ResponseEntity.status(404).body(new MessageResponse("Entity not found!", MessageType.ERROR));
+        return ResponseEntity.status(404).body(new MessageResponse(ex.getMessage(), MessageType.ERROR));
     }
 
 }

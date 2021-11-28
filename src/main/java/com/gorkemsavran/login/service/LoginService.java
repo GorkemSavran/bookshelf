@@ -29,7 +29,7 @@ public class LoginService {
     public JwtTokenDTO login(LoginRequestDTO loginRequestDTO) {
 
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginRequestDTO.getUsername(), loginRequestDTO.getPassword());
-        System.out.println(secretKey);
+
         try {
             Authentication user = authenticationProvider.authenticate(usernamePasswordAuthenticationToken);
             String token = JwtUtil.generateToken(user, secretKey, 15);

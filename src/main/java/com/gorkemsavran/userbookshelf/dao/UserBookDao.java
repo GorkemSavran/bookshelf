@@ -40,4 +40,5 @@ public class UserBookDao implements IDao<UserBook> {
     public void delete(UserBook userBook) {
         entityManager.remove(userBook);
     }
+
 }
