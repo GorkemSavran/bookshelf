@@ -86,7 +86,7 @@ class UserShelfServiceTest {
     void addShelf() {
         MessageResponse messageResponse = userShelfService.addShelf(fakeUser, "newshelf");
 
-        assertEquals("newshelf", ((Shelf) fakeUser.getShelves().toArray()[2]).getName());
+        assertTrue(fakeUser.getShelves().stream().anyMatch(shelf -> shelf.getName().equals("newshelf")));
         assertEquals(3, fakeUser.getShelves().size());
     }
 
