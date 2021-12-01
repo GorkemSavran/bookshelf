@@ -19,12 +19,20 @@ public class RegisterService {
 
     @Transactional
     public MessageResponse register(User user) {
-        if (userDao.existsByUsername(user.getUsername()))
+        if (isExistsByUsername(user))
             return new MessageResponse("Username is taken!", MessageType.ERROR);
-        if (userDao.existsByEmail(user.getEmail()))
+        if (isExistsByEmail(user))
             return new MessageResponse("Email is taken!", MessageType.ERROR);
 
         userDao.save(user);
         return new MessageResponse("You is successfuly registered", MessageType.SUCCESS);
+    }
+
+    private boolean isExistsByEmail(User user) {
+        return userDao.existsByEmail(user.getEmail());
+    }
+
+    private boolean isExistsByUsername(User user) {
+        return userDao.existsByUsername(user.getUsername());
     }
 }
