@@ -17,7 +17,7 @@ import javax.transaction.Transactional;
 public class LoginService {
 
     @Value("${security.jwt.secret-key}")
-    private String secretKey;
+    String secretKey;
 
     private final AuthenticationProvider authenticationProvider;
 
