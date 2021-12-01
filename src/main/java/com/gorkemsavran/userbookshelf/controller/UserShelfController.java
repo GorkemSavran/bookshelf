@@ -38,8 +38,8 @@ public class UserShelfController {
 
     @PostMapping
     @PreAuthorize("hasRole('USER')")
-    public MessageResponse addShelf(UsernamePasswordAuthenticationToken authentication) {
-        return userShelfService.addShelf((User) authentication.getPrincipal());
+    public MessageResponse addShelf(UsernamePasswordAuthenticationToken authentication, @RequestParam String name) {
+        return userShelfService.addShelf((User) authentication.getPrincipal(), name);
     }
 
     @DeleteMapping("/{shelfId}")

@@ -21,12 +21,15 @@ public class Shelf {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Book> books;
 
+    private String name;
+
     public Shelf() {
     }
 
-    public Shelf(User user) {
+    public Shelf(User user, String name) {
         this.user = user;
         this.books = new HashSet<>();
+        this.name = name;
     }
 
     public Long getId() {
@@ -47,5 +50,13 @@ public class Shelf {
 
     public void setBooks(Set<Book> books) {
         this.books = books;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
