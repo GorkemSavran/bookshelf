@@ -12,6 +12,8 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,45 +30,59 @@ public class BookService {
     }
 
     public Book getBook(Long id) {
-        return bookDao.get(id).orElseThrow(() -> new EntityNotFoundException("Book not found!"));
+        return bookDao.get(id).orElseThrow(bookNotFound());
+    }
+
+    private Supplier<EntityNotFoundException> bookNotFound() {
+        return () -> new EntityNotFoundException("Book not found!");
     }
 
     @Transactional
     public Set<UserBook> getReviewsOfBook(Long id) {
         return bookDao.get(id).orElseThrow(EntityNotFoundException::new).getReadUsers()
-                .stream().filter(userBook -> userBook.getRating() != null && userBook.getReview() != null)
+                .stream().filter(isUserHasRatingAndReview())
                 .collect(Collectors.toSet());
+    }
+
+    private Predicate<UserBook> isUserHasRatingAndReview() {
+        return userBook -> userBook.getRating() != null && userBook.getReview() != null;
     }
 
     @Transactional
     public MessageResponse addBook(Book book) {
-        if (bookDao.existsByNameAuthorAndPublishDate(
-                book.getName(),
-                book.getAuthor(),
-                book.getPublishDate()))
+        if (isExistsByNameAuthorAndPublishDate(book))
             return new MessageResponse("Book that you are trying to add is already exist!", MessageType.ERROR);
+
         bookDao.save(book);
         return new MessageResponse(String.format("Book with name %s successfuly saved", book.getName()), MessageType.SUCCESS);
+    }
+
+    private boolean isExistsByNameAuthorAndPublishDate(Book book) {
+        return bookDao.existsByNameAuthorAndPublishDate(
+                book.getName(),
+                book.getAuthor(),
+                book.getPublishDate());
     }
 
     @Transactional
     public MessageResponse deleteBook(Long id) {
         Optional<Book> book = bookDao.get(id);
-        if (!book.isPresent())
+        if (isBookNotPresent(book))
             return new MessageResponse("Book does not exist", MessageType.ERROR);
         bookDao.delete(book.get());
         return new MessageResponse(String.format("Book with id %s is successfuly deleted!", id), MessageType.SUCCESS);
     }
 
+    private boolean isBookNotPresent(Optional<Book> book) {
+        return !book.isPresent();
+    }
+
     @Transactional
     public MessageResponse updateBook(Long id, Book updateBook) {
         Optional<Book> optionalBook = bookDao.get(id);
-        if (!optionalBook.isPresent())
+        if (isBookNotPresent(optionalBook))
             return new MessageResponse("Book that you are trying to update does not exist!", MessageType.ERROR);
-        if (bookDao.existsByNameAuthorAndPublishDate(
-                updateBook.getName(),
-                updateBook.getAuthor(),
-                updateBook.getPublishDate()))
+        if (isExistsByNameAuthorAndPublishDate(updateBook))
             return new MessageResponse("Book that you are trying to update can not have same fields with other book!", MessageType.ERROR);
         bookDao.update(optionalBook.get(), updateBook);
         return new MessageResponse("Book is successfuly updated!", MessageType.SUCCESS);
