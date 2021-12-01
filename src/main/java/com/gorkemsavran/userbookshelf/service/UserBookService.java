@@ -21,12 +21,9 @@ import java.util.stream.Collectors;
 @Service
 public class UserBookService {
 
-    private final UserDao userDao;
-
     private final BookDao bookDao;
 
-    public UserBookService(UserDao userDao, BookDao bookDao) {
-        this.userDao = userDao;
+    public UserBookService(BookDao bookDao) {
         this.bookDao = bookDao;
     }
 
@@ -81,17 +78,19 @@ public class UserBookService {
         if (!optionalBook.isPresent())
             return new MessageResponse("Book does not exist!", MessageType.ERROR);
 
-//        Book book = optionalBook.get();
+        Optional<UserBook> userBook = user.getUserBooks().stream().filter(isUserBookEquals(bookId)).findFirst();
 
-        for (UserBook userBook : user.getUserBooks()) {
-            if (userBook.getBook().getId().equals(bookId)) {
-                userBook.setReview(addReviewAndRatingDTO.getReview());
-                userBook.setRating(addReviewAndRatingDTO.getRating());
-                break;
-            }
-        }
+        if (!userBook.isPresent())
+            return new MessageResponse("User does not have this book!", MessageType.ERROR);
+
+        userBook.get().setReview(addReviewAndRatingDTO.getReview());
+        userBook.get().setRating(addReviewAndRatingDTO.getRating());
 
         return new MessageResponse("Review and rating added successfuly!", MessageType.SUCCESS);
+    }
+
+    private Predicate<UserBook> isUserBookEquals(Long bookId) {
+        return userBook -> userBook.getBook().getId().equals(bookId);
     }
 
 }
