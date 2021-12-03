@@ -25,7 +25,7 @@ public class RegisterService {
             return new MessageResponse("Email is taken!", MessageType.ERROR);
 
         userDao.save(user);
-        return new MessageResponse("You is successfuly registered", MessageType.SUCCESS);
+        return new MessageResponse("You are successfuly registered", MessageType.SUCCESS);
     }
 
     private boolean isExistsByEmail(User user) {
