@@ -173,4 +173,9 @@ public class UserAddBookAndReviewTest extends AbstractScenarioTest {
     private String extractJwtTokenFromMvcResult(MvcResult loginResult) throws UnsupportedEncodingException {
         return JsonPath.read(loginResult.getResponse().getContentAsString(), "$.token");
     }
+
+    @Override
+    protected void setUsername(String username) {
+        username = "user";
+    }
 }

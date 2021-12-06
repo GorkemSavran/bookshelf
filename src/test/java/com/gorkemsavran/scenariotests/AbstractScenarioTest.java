@@ -42,6 +42,8 @@ public abstract class AbstractScenarioTest {
 
     protected static ObjectMapper objectMapper = new ObjectMapper();
 
+    private String username, password;
+
     @BeforeEach
     void setUp() throws Exception {
         buildMockMvc();
@@ -67,9 +69,11 @@ public abstract class AbstractScenarioTest {
 
     private void populateDatabase() {
         User user = new User("user", "user", Authority.ROLE_USER, "email@gmail.com");
+        User admin = new User("admin", "admin", Authority.ROLE_ADMIN, "admin@gmail.com");
         Book book = new Book("book", "author", BookCategory.ADVENTURE, LocalDate.MAX, "publisher");
         Book book2 = new Book("book2", "author2", BookCategory.ADVENTURE, LocalDate.MAX, "publisher2");
         userService.addUser(user);
+        userService.addUser(admin);
         bookService.addBook(book);
         bookService.addBook(book2);
     }
@@ -77,8 +81,10 @@ public abstract class AbstractScenarioTest {
     protected void loginAndPopulateJwtToken() throws Exception {
         MvcResult loginResult = mockMvc.perform(post("/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new LoginRequestDTO("user", "user"))))
+                        .content(objectMapper.writeValueAsString(new LoginRequestDTO(username, username))))
                 .andReturn();
         jwtToken = JsonPath.read(loginResult.getResponse().getContentAsString(), "$.token");
     }
+
+    protected abstract void setUsername(String username);
 }

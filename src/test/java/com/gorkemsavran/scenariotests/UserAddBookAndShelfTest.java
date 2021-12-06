@@ -156,4 +156,9 @@ public class UserAddBookAndShelfTest extends AbstractScenarioTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .queryParam("bookId", String.valueOf(bookId)));
     }
+
+    @Override
+    protected void setUsername(String username) {
+        username = "user";
+    }
 }
