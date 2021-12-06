@@ -5,6 +5,7 @@ import com.gorkemsavran.userbookshelf.controller.response.UserBookResponseDTO;
 import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -12,10 +13,12 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 public class UserAddBookAndReviewTest extends AbstractScenarioTest {
 
     @Test
