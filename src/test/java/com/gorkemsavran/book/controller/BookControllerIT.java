@@ -19,8 +19,6 @@ import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -43,9 +41,6 @@ class BookControllerIT {
 
     @Autowired
     BookController bookController;
-
-    @PersistenceContext
-    EntityManager entityManager;
 
     MockMvc mockMvc;
 

@@ -41,7 +41,6 @@ public class PopulateDatabase {
 //                Authority.ROLE_ADMIN,
 //                "admin@gmail.com"
 //        );
-//
 //        Book book1 = new Book(
 //                "book1",
 //                "author1",
