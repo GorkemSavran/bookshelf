@@ -25,8 +25,11 @@ public class UserShelfController {
     @GetMapping
     @PreAuthorize("hasRole('USER')")
     public List<Long> getUserShelves(UsernamePasswordAuthenticationToken authentication) {
-        return userShelfService.getUserShelfs((User) authentication.getPrincipal())
-                .stream().map(Shelf::getId).collect(Collectors.toList());
+        return userShelfService
+                .getUserShelfs((User) authentication.getPrincipal())
+                .stream()
+                .map(Shelf::getId)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{shelfId}")

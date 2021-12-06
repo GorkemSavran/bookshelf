@@ -54,7 +54,10 @@ public class UserBookController {
     @GetMapping("/reviews")
     @PreAuthorize("hasRole('USER')")
     public List<UserBookReviewResponseDTO> getUserReviews(UsernamePasswordAuthenticationToken authentication) {
-        return userBookService.getUserReviews((User) authentication.getPrincipal())
-                .stream().map(UserBookReviewResponseDTO::new).collect(Collectors.toList());
+        return userBookService
+                .getUserReviews((User) authentication.getPrincipal())
+                .stream()
+                .map(UserBookReviewResponseDTO::new)
+                .collect(Collectors.toList());
     }
 }

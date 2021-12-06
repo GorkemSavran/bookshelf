@@ -1,11 +1,10 @@
-package com.gorkemsavran.common.exceptionHandling;
+package com.gorkemsavran.common.exceptionhandling;
 
 import com.gorkemsavran.common.response.FieldErrorsResponse;
 import com.gorkemsavran.common.response.MessageResponse;
 import com.gorkemsavran.common.response.MessageType;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

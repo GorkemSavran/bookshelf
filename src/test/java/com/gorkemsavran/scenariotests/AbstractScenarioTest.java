@@ -1,5 +1,6 @@
-package com.gorkemsavran.scenarioTests;
+package com.gorkemsavran.scenariotests;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gorkemsavran.TestConfig;
 import com.gorkemsavran.book.entity.Book;
 import com.gorkemsavran.book.entity.BookCategory;
@@ -8,7 +9,6 @@ import com.gorkemsavran.user.entity.Authority;
 import com.gorkemsavran.user.entity.User;
 import com.gorkemsavran.user.service.UserService;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -37,22 +37,43 @@ public abstract class AbstractScenarioTest {
 
     protected MockMvc mockMvc;
 
-    protected String jwtToken;
+    private String jwtToken;
+
+    protected static ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void setUp() throws Exception {
+        buildMockMvc();
+        populateDatabase();
+        loginAndPopulateJwtToken();
+        buildMockMvcWithJwtToken();
+    }
+
+    private void buildMockMvc() {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .apply(SecurityMockMvcConfigurers.springSecurity())
                 .build();
-        User user = new User("user", "user", Authority.ROLE_USER, "email@gmail.com");
-        Book book = new Book("book", "author", BookCategory.ADVENTURE, LocalDate.MAX, "publisher");
-        userService.addUser(user);
-        bookService.addBook(book);
-        jwtToken = login();
     }
 
-    protected String login() throws Exception {
+    private void buildMockMvcWithJwtToken() {
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(SecurityMockMvcConfigurers.springSecurity())
+                .apply(new JwtTokenMockMvcBuilderCustomizer(jwtToken))
+                .build();
+    }
+
+    private void populateDatabase() {
+        User user = new User("user", "user", Authority.ROLE_USER, "email@gmail.com");
+        Book book = new Book("book", "author", BookCategory.ADVENTURE, LocalDate.MAX, "publisher");
+        Book book2 = new Book("book2", "author2", BookCategory.ADVENTURE, LocalDate.MAX, "publisher2");
+        userService.addUser(user);
+        bookService.addBook(book);
+        bookService.addBook(book2);
+    }
+
+    protected void loginAndPopulateJwtToken() throws Exception {
         MvcResult loginResult = mockMvc.perform(post("/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\n" +
@@ -60,6 +81,6 @@ public abstract class AbstractScenarioTest {
                                 "    \"password\": \"user\"\n" +
                                 "}\n"))
                 .andReturn();
-        return JsonPath.read(loginResult.getResponse().getContentAsString(), "$.token");
+        jwtToken = JsonPath.read(loginResult.getResponse().getContentAsString(), "$.token");
     }
 }
