@@ -5,6 +5,7 @@ import com.gorkemsavran.TestConfig;
 import com.gorkemsavran.book.entity.Book;
 import com.gorkemsavran.book.entity.BookCategory;
 import com.gorkemsavran.book.service.BookService;
+import com.gorkemsavran.login.controller.request.LoginRequestDTO;
 import com.gorkemsavran.user.entity.Authority;
 import com.gorkemsavran.user.entity.User;
 import com.gorkemsavran.user.service.UserService;
@@ -76,10 +77,7 @@ public abstract class AbstractScenarioTest {
     protected void loginAndPopulateJwtToken() throws Exception {
         MvcResult loginResult = mockMvc.perform(post("/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\n" +
-                                "    \"username\": \"user\",\n" +
-                                "    \"password\": \"user\"\n" +
-                                "}\n"))
+                        .content(objectMapper.writeValueAsString(new LoginRequestDTO("user", "user"))))
                 .andReturn();
         jwtToken = JsonPath.read(loginResult.getResponse().getContentAsString(), "$.token");
     }
