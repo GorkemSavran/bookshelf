@@ -175,7 +175,7 @@ public class UserAddBookAndReviewTest extends AbstractScenarioTest {
     }
 
     @Override
-    protected void setUsername(String username) {
-        username = "user";
+    protected String getUsername() {
+        return "user";
     }
 }

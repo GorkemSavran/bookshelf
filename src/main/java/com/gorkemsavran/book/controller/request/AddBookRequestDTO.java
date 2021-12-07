@@ -29,6 +29,17 @@ public class AddBookRequestDTO {
     @Size(min = 1, max = 200)
     private String publisher;
 
+    public AddBookRequestDTO() {
+    }
+
+    public AddBookRequestDTO(String name, String author, BookCategory category, LocalDate publishDate, String publisher) {
+        this.name = name;
+        this.author = author;
+        this.category = category;
+        this.publishDate = publishDate;
+        this.publisher = publisher;
+    }
+
     public Book toBookEntity() {
         return new Book(
                 name,

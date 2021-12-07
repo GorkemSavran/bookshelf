@@ -24,6 +24,16 @@ public class AddUserRequestDTO {
     @Email
     private String email;
 
+    public AddUserRequestDTO() {
+    }
+
+    public AddUserRequestDTO(String username, String password, Authority role, String email) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.email = email;
+    }
+
     public User toUser() {
         return new User(
           username,

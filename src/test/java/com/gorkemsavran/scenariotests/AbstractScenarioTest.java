@@ -1,6 +1,7 @@
 package com.gorkemsavran.scenariotests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gorkemsavran.TestConfig;
 import com.gorkemsavran.book.entity.Book;
 import com.gorkemsavran.book.entity.BookCategory;
@@ -9,7 +10,9 @@ import com.gorkemsavran.login.controller.request.LoginRequestDTO;
 import com.gorkemsavran.user.entity.Authority;
 import com.gorkemsavran.user.entity.User;
 import com.gorkemsavran.user.service.UserService;
+import com.gorkemsavran.userbookshelf.service.UserBookService;
 import com.jayway.jsonpath.JsonPath;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -34,15 +37,22 @@ public abstract class AbstractScenarioTest {
     BookService bookService;
 
     @Autowired
+    UserBookService userBookService;
+
+    @Autowired
     WebApplicationContext context;
 
     protected MockMvc mockMvc;
 
     private String jwtToken;
 
-    protected static ObjectMapper objectMapper = new ObjectMapper();
+    protected static ObjectMapper objectMapper;
 
-    private String username, password;
+    @BeforeAll
+    static void beforeAll() {
+        objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+    }
 
     @BeforeEach
     void setUp() throws Exception {
@@ -81,10 +91,10 @@ public abstract class AbstractScenarioTest {
     protected void loginAndPopulateJwtToken() throws Exception {
         MvcResult loginResult = mockMvc.perform(post("/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new LoginRequestDTO(username, username))))
+                        .content(objectMapper.writeValueAsString(new LoginRequestDTO(getUsername(), getUsername()))))
                 .andReturn();
         jwtToken = JsonPath.read(loginResult.getResponse().getContentAsString(), "$.token");
     }
 
-    protected abstract void setUsername(String username);
+    protected abstract String getUsername();
 }
