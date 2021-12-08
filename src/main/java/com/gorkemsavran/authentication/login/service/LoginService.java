@@ -1,9 +1,8 @@
-package com.gorkemsavran.login.service;
+package com.gorkemsavran.authentication.login.service;
 
+import com.gorkemsavran.authentication.login.controller.request.LoginRequestDTO;
+import com.gorkemsavran.authentication.login.controller.response.JwtTokenDTO;
 import com.gorkemsavran.common.util.JwtUtil;
-import com.gorkemsavran.login.controller.request.LoginRequestDTO;
-import com.gorkemsavran.login.controller.response.JwtTokenDTO;
-import com.gorkemsavran.user.dao.UserDao;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -1,4 +1,4 @@
-package com.gorkemsavran.login.controller.response;
+package com.gorkemsavran.authentication.login.controller.response;
 
 public class JwtTokenDTO {
 

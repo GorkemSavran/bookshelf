@@ -1,9 +1,7 @@
-package com.gorkemsavran.login.service;
+package com.gorkemsavran.authentication.login.service;
 
-import com.gorkemsavran.login.controller.request.LoginRequestDTO;
-import com.gorkemsavran.login.controller.response.JwtTokenDTO;
-import com.gorkemsavran.user.entity.Authority;
-import com.gorkemsavran.user.entity.User;
+import com.gorkemsavran.authentication.login.controller.request.LoginRequestDTO;
+import com.gorkemsavran.authentication.login.controller.response.JwtTokenDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,9 +14,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import org.springframework.security.core.AuthenticationException;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;

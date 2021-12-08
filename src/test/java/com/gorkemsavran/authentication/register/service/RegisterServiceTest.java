@@ -1,4 +1,4 @@
-package com.gorkemsavran.register.service;
+package com.gorkemsavran.authentication.register.service;
 
 import com.gorkemsavran.common.response.MessageResponse;
 import com.gorkemsavran.common.response.MessageType;
@@ -12,7 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;

@@ -1,8 +1,6 @@
-package com.gorkemsavran.login.controller;
+package com.gorkemsavran.authentication.register.controller;
 
 import com.gorkemsavran.TestConfig;
-import com.gorkemsavran.user.entity.Authority;
-import com.gorkemsavran.user.entity.User;
 import com.gorkemsavran.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,39 +12,40 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringJUnitWebConfig(classes = TestConfig.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class LoginControllerIT {
+class RegisterControllerIT {
 
     @Autowired
     UserService userService;
 
     @Autowired
-    LoginController loginController;
+    RegisterController registerController;
 
     MockMvc mockMvc;
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(loginController).build();
-        User user = new User("admin", "admin", Authority.ROLE_ADMIN, "email");
-        userService.addUser(user);
+        mockMvc = MockMvcBuilders.standaloneSetup(registerController).build();
     }
 
     @Test
-    void login() throws Exception {
-        mockMvc.perform(post("/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\n" +
-                        "    \"username\": \"admin\",\n" +
-                        "    \"password\": \"admin\"\n" +
-                        "}"))
+    void register() throws Exception {
+        mockMvc.perform(post("/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\n" +
+                                "    \"username\": \"user123\",\n" +
+                                "    \"password\": \"user123\",\n" +
+                                "    \"email\": \"user@gmail.com\"\n" +
+                                "}"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.token", is(String.class)));
+                .andExpect(jsonPath("$.message", is("You are successfuly registered")))
+                .andExpect(jsonPath("$.messageType", is("SUCCESS")));
+        assertEquals(1, userService.getAllUsers().size());
     }
 }

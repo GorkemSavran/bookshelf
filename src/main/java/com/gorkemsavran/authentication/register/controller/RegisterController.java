@@ -1,8 +1,8 @@
-package com.gorkemsavran.register.controller;
+package com.gorkemsavran.authentication.register.controller;
 
+import com.gorkemsavran.authentication.register.controller.request.RegisterRequestDTO;
+import com.gorkemsavran.authentication.register.service.RegisterService;
 import com.gorkemsavran.common.response.MessageResponse;
-import com.gorkemsavran.register.controller.request.RegisterRequestDTO;
-import com.gorkemsavran.register.service.RegisterService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

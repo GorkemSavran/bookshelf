@@ -1,8 +1,8 @@
-package com.gorkemsavran.login.controller;
+package com.gorkemsavran.authentication.login.controller;
 
-import com.gorkemsavran.login.controller.request.LoginRequestDTO;
-import com.gorkemsavran.login.controller.response.JwtTokenDTO;
-import com.gorkemsavran.login.service.LoginService;
+import com.gorkemsavran.authentication.login.controller.request.LoginRequestDTO;
+import com.gorkemsavran.authentication.login.controller.response.JwtTokenDTO;
+import com.gorkemsavran.authentication.login.service.LoginService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

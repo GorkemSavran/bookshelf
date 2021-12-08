@@ -1,7 +1,6 @@
-package com.gorkemsavran.login.controller.request;
+package com.gorkemsavran.authentication.login.controller.request;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 public class LoginRequestDTO {
 

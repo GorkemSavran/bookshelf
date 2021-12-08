@@ -1,4 +1,4 @@
-package com.gorkemsavran.register.controller.request;
+package com.gorkemsavran.authentication.register.controller.request;
 
 import com.gorkemsavran.user.entity.Authority;
 import com.gorkemsavran.user.entity.User;

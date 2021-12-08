@@ -1,4 +1,4 @@
-package com.gorkemsavran.register.service;
+package com.gorkemsavran.authentication.register.service;
 
 import com.gorkemsavran.common.response.MessageResponse;
 import com.gorkemsavran.common.response.MessageType;
