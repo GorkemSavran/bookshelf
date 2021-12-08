@@ -54,7 +54,7 @@ public class UserShelfService {
     @Transactional
     @PersistUser
     public MessageResponse addShelf(User user, String name) {
-        user.getShelves().add(new Shelf(user, name));
+        user.addShelf(new Shelf(user, name));
         return new MessageResponse("Shelf added successfuly", MessageType.SUCCESS);
     }
 

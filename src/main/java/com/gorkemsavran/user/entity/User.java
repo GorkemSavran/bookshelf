@@ -62,6 +62,10 @@ public class User extends BaseEntity implements UserDetails {
         return userBooks.contains(new UserBook(this, book));
     }
 
+    public void addShelf(Shelf shelf) {
+        shelves.add(shelf);
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
