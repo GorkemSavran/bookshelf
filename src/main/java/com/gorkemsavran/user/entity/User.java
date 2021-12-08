@@ -66,6 +66,14 @@ public class User extends BaseEntity implements UserDetails {
         shelves.add(shelf);
     }
 
+    public void removeShelf(Shelf shelf) {
+        shelves.remove(shelf);
+    }
+
+    public boolean hasShelf(Shelf shelf) {
+        return shelves.contains(shelf);
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;

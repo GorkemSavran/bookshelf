@@ -61,10 +61,15 @@ public class UserShelfService {
     @Transactional
     @PersistUser
     public MessageResponse deleteShelf(User user, Long shelfId) {
-        Optional<Shelf> optionalShelf = user.getShelves().stream().filter(isShelfEquals(shelfId)).findFirst();
+        Optional<Shelf> optionalShelf = shelfDao.get(shelfId);
         if (!optionalShelf.isPresent())
             return new MessageResponse("Shelf does not exist", MessageType.ERROR);
-        user.getShelves().remove(optionalShelf.get());
+
+        Shelf shelf = optionalShelf.get();
+        if (!user.hasShelf(shelf))
+            return new MessageResponse("User does not have this shelf!", MessageType.ERROR);
+
+        user.removeShelf(shelf);
         return new MessageResponse("Shelf successfuly deleted", MessageType.SUCCESS);
     }
 
