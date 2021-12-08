@@ -40,6 +40,7 @@ public class UserAddBookAndReviewTest extends AbstractScenarioTest {
 
     @Test
     void userRemoveBook() throws Exception {
+        addBookToUsersBooks(1);
         removeBookFromUsersBooks(1)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.messageType", is("SUCCESS")))

@@ -35,7 +35,7 @@ public class UserAddBookAndShelfTest extends AbstractScenarioTest {
     @Test
     void userRemoveShelf_shelfNotExist() throws Exception {
         deleteShelf(1)
-                .andExpect(jsonPath("$.message", is("Shelf does not exist")))
+                .andExpect(jsonPath("$.message", is("Shelf not found!")))
                 .andExpect(jsonPath("$.messageType", is("ERROR")));
     }
 
@@ -57,7 +57,7 @@ public class UserAddBookAndShelfTest extends AbstractScenarioTest {
         addBookToUsersBooks(1);
 
         addBookToShelf(1, 1)
-                .andExpect(jsonPath("$.message", is("Shelf does not exist")))
+                .andExpect(jsonPath("$.message", is("Shelf not found!")))
                 .andExpect(jsonPath("$.messageType", is("ERROR")));
     }
 
@@ -68,7 +68,7 @@ public class UserAddBookAndShelfTest extends AbstractScenarioTest {
                 .andExpect(jsonPath("$.messageType", is("SUCCESS")));
 
         addBookToShelf(1, 1)
-                .andExpect(jsonPath("$.message", is("Book could not found in user's books")))
+                .andExpect(jsonPath("$.message", is("User has not this book!")))
                 .andExpect(jsonPath("$.messageType", is("ERROR")));
     }
 
@@ -102,7 +102,7 @@ public class UserAddBookAndShelfTest extends AbstractScenarioTest {
                 .andExpect(jsonPath("$.messageType", is("SUCCESS")));
 
         deleteBookFromShelf(1, 132)
-                .andExpect(jsonPath("$.message", is("Book does not exist")))
+                .andExpect(jsonPath("$.message", is("Book not found!")))
                 .andExpect(jsonPath("$.messageType", is("ERROR")));
     }
 
@@ -119,7 +119,7 @@ public class UserAddBookAndShelfTest extends AbstractScenarioTest {
                 .andExpect(jsonPath("$.messageType", is("SUCCESS")));
 
         deleteBookFromShelf(132, 1)
-                .andExpect(jsonPath("$.message", is("Shelf does not exist")))
+                .andExpect(jsonPath("$.message", is("Shelf not found!")))
                 .andExpect(jsonPath("$.messageType", is("ERROR")));
     }
 
