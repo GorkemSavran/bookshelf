@@ -68,12 +68,10 @@ public class PopulateDatabase {
         userService.addUser(admin);
         userService.addUser(user);
 
-        user = userService.getUser(2L);
-        AddReviewAndRatingDTO addReviewAndRatingDTO = new AddReviewAndRatingDTO();
-        addReviewAndRatingDTO.setReview("review");
-        addReviewAndRatingDTO.setRating(1.0);
-        userBookService.addBookToUserBooks(user, 1L);
-        userBookService.addReviewAndRatingToBook(user, 1L, addReviewAndRatingDTO);
+//        AddReviewAndRatingDTO addReviewAndRatingDTO = new AddReviewAndRatingDTO();
+//        addReviewAndRatingDTO.setReview("review");
+//        addReviewAndRatingDTO.setRating(1.0);
+//        user.addBookWithReviewAndRating(book1, addReviewAndRatingDTO);
     }
 
 }

@@ -5,9 +5,9 @@ import com.gorkemsavran.book.entity.Book;
 import com.gorkemsavran.common.aspect.PersistUser;
 import com.gorkemsavran.common.response.MessageResponse;
 import com.gorkemsavran.common.response.MessageType;
-import com.gorkemsavran.user.dao.UserDao;
 import com.gorkemsavran.user.entity.User;
 import com.gorkemsavran.userbookshelf.controller.request.AddReviewAndRatingDTO;
+import com.gorkemsavran.userbookshelf.dao.UserBookDao;
 import com.gorkemsavran.userbookshelf.entity.UserBook;
 import org.springframework.stereotype.Service;
 
@@ -15,16 +15,16 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @Service
 public class UserBookService {
 
     private final BookDao bookDao;
+    private final UserBookDao userBookDao;
 
-    public UserBookService(BookDao bookDao) {
+    public UserBookService(BookDao bookDao, UserBookDao userBookDao) {
         this.bookDao = bookDao;
+        this.userBookDao = userBookDao;
     }
 
     @Transactional
@@ -46,8 +46,11 @@ public class UserBookService {
         if (!optionalBook.isPresent())
             return new MessageResponse("Book does not exist", MessageType.ERROR);
 
-        user.getUserBooks().add(new UserBook(user, optionalBook.get(), null, null));
+        Book book = optionalBook.get();
+        if (user.hasBook(book))
+            return new MessageResponse("Book already in user's books", MessageType.ERROR);
 
+        user.addBook(book);
         return new MessageResponse("Book successfuly added to user's books.", MessageType.SUCCESS);
     }
 
@@ -58,10 +61,11 @@ public class UserBookService {
         if (!optionalBook.isPresent())
             return new MessageResponse("Book does not exist!", MessageType.ERROR);
 
-        final UserBook fakeUserBook = new UserBook(user, optionalBook.get(), null, null);
-        user.getUserBooks().remove(fakeUserBook);
-        optionalBook.get().getReadUsers().remove(fakeUserBook);
+        Book book = optionalBook.get();
+        if (!user.hasBook(book))
+            return new MessageResponse("Book is not in user's books", MessageType.ERROR);
 
+        user.removeBook(book);
         return new MessageResponse("Book is successfuly removed from user's books!", MessageType.SUCCESS);
     }
 
@@ -73,21 +77,12 @@ public class UserBookService {
         if (!optionalBook.isPresent())
             return new MessageResponse("Book does not exist!", MessageType.ERROR);
 
-        Optional<UserBook> optionalUserBook = user.getUserBooks().stream().filter(isUserBookEquals(bookId)).findFirst();
-
-        if (!optionalUserBook.isPresent())
+        Book book = optionalBook.get();
+        if (!user.hasBook(book))
             return new MessageResponse("User does not have this book!", MessageType.ERROR);
 
-
-        UserBook userBook = optionalUserBook.get();
-        userBook.setReview(addReviewAndRatingDTO.getReview());
-        userBook.setRating(addReviewAndRatingDTO.getRating());
-
+        UserBook userBook = new UserBook(user, book, addReviewAndRatingDTO.getReview(), addReviewAndRatingDTO.getRating());
+        userBookDao.merge(userBook);
         return new MessageResponse("Review and rating added successfuly!", MessageType.SUCCESS);
     }
-
-    private Predicate<UserBook> isUserBookEquals(Long bookId) {
-        return userBook -> userBook.getBook().getId().equals(bookId);
-    }
-
 }

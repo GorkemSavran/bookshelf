@@ -37,6 +37,12 @@ public class UserBook {
         this.rating = rating;
     }
 
+    public UserBook(User user, Book book) {
+        this.userBookKey = new UserBookKey(user.getId(), book.getId());
+        this.user = user;
+        this.book = book;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

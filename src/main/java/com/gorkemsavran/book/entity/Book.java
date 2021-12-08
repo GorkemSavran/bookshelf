@@ -1,6 +1,7 @@
 package com.gorkemsavran.book.entity;
 
 import com.gorkemsavran.common.entity.BaseEntity;
+import com.gorkemsavran.user.entity.User;
 import com.gorkemsavran.userbookshelf.entity.UserBook;
 
 import javax.persistence.*;
@@ -22,7 +23,7 @@ public class Book extends BaseEntity {
 
     private String publisher;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "book")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "book")
     private Set<UserBook> readUsers;
 
     public Book(String name, String author, BookCategory category, LocalDate publishDate, String publisher) {

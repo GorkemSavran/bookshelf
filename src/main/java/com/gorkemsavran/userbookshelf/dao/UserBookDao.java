@@ -41,4 +41,7 @@ public class UserBookDao implements IDao<UserBook> {
         entityManager.remove(userBook);
     }
 
+    public void merge(UserBook userBook) {
+        entityManager.merge(userBook);
+    }
 }

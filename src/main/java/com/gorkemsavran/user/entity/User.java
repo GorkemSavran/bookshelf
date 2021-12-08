@@ -1,6 +1,8 @@
 package com.gorkemsavran.user.entity;
 
+import com.gorkemsavran.book.entity.Book;
 import com.gorkemsavran.common.entity.BaseEntity;
+import com.gorkemsavran.userbookshelf.controller.request.AddReviewAndRatingDTO;
 import com.gorkemsavran.userbookshelf.entity.Shelf;
 import com.gorkemsavran.userbookshelf.entity.UserBook;
 import org.springframework.security.core.GrantedAuthority;
@@ -46,6 +48,18 @@ public class User extends BaseEntity implements UserDetails {
         password = user.password;
         role = user.role;
         email = user.email;
+    }
+
+    public void addBook(Book book) {
+        userBooks.add(new UserBook(this, book));
+    }
+
+    public void removeBook(Book book) {
+        userBooks.remove(new UserBook(this, book));
+    }
+
+    public boolean hasBook(Book book) {
+        return userBooks.contains(new UserBook(this, book));
     }
 
     @Override
