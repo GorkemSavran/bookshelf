@@ -1,4 +1,4 @@
-package com.gorkemsavran.common.exceptionhandling;
+package com.gorkemsavran.common.exceptionHandling;
 
 import com.gorkemsavran.common.response.FieldErrorsResponse;
 import com.gorkemsavran.common.response.MessageResponse;

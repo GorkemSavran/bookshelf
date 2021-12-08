@@ -17,9 +17,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -67,12 +71,12 @@ class BookServiceTest {
 
         Book foundBook = bookService.getBook(1L);
 
-        assertEquals("book", foundBook.getName(), "Kitap ismi doğru değil.");
+        assertEquals(exampleBook.getName(), foundBook.getName(), "Kitap ismi doğru değil.");
         then(bookDao).should().get(anyLong());
     }
 
     @Test
-    void getBookHasError() {
+    void getBook_bookNotFound() {
         given(bookDao.get(anyLong())).willThrow(new EntityNotFoundException());
 
         assertThrows(EntityNotFoundException.class, () -> bookService.getBook(1L), "Hata fırlatmıyor");
@@ -83,14 +87,14 @@ class BookServiceTest {
     void getReviewsOfBook() {
         given(bookDao.get(anyLong())).willReturn(Optional.ofNullable(exampleBook));
 
-        Set<UserBook> reviewsOfBook = bookService.getReviewsOfBook(1L);
+        List<UserBook> reviewsOfBook = bookService.getReviewsOfBook(1L);
 
         assertEquals(1, reviewsOfBook.size());
         then(bookDao).should().get(anyLong());
     }
 
     @Test
-    void getReviewsOfBookHasError() {
+    void getReviewsOfBook_bookNotFound() {
         given(bookDao.get(anyLong())).willThrow(new EntityNotFoundException());
 
         assertThrows(EntityNotFoundException.class, () -> bookService.getReviewsOfBook(1L));

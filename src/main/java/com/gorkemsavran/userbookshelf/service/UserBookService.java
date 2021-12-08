@@ -78,13 +78,15 @@ public class UserBookService {
         if (!optionalBook.isPresent())
             return new MessageResponse("Book does not exist!", MessageType.ERROR);
 
-        Optional<UserBook> userBook = user.getUserBooks().stream().filter(isUserBookEquals(bookId)).findFirst();
+        Optional<UserBook> optionalUserBook = user.getUserBooks().stream().filter(isUserBookEquals(bookId)).findFirst();
 
-        if (!userBook.isPresent())
+        if (!optionalUserBook.isPresent())
             return new MessageResponse("User does not have this book!", MessageType.ERROR);
 
-        userBook.get().setReview(addReviewAndRatingDTO.getReview());
-        userBook.get().setRating(addReviewAndRatingDTO.getRating());
+
+        UserBook userBook = optionalUserBook.get();
+        userBook.setReview(addReviewAndRatingDTO.getReview());
+        userBook.setRating(addReviewAndRatingDTO.getRating());
 
         return new MessageResponse("Review and rating added successfuly!", MessageType.SUCCESS);
     }

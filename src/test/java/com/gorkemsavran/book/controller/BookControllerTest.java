@@ -94,7 +94,7 @@ class BookControllerTest {
 
     @Test
     void getReviewsOfBook() throws Exception {
-        Set<UserBook> userBooks = new HashSet<>();
+        List<UserBook> userBooks = new ArrayList<>();
         userBooks.add(userBook);
         given(bookService.getReviewsOfBook(anyLong())).willReturn(userBooks);
         mockMvc.perform(get("/book/{id}/reviews", 1L))

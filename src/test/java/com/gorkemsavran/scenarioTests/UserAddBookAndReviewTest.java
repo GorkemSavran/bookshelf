@@ -1,4 +1,4 @@
-package com.gorkemsavran.scenariotests;
+package com.gorkemsavran.scenarioTests;
 
 import com.gorkemsavran.userbookshelf.controller.request.AddReviewAndRatingDTO;
 import com.gorkemsavran.userbookshelf.controller.response.UserBookResponseDTO;

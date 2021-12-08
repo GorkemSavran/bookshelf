@@ -1,4 +1,4 @@
-package com.gorkemsavran.scenariotests;
+package com.gorkemsavran.scenarioTests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

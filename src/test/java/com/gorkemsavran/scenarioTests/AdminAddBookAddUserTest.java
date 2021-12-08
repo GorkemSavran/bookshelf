@@ -1,4 +1,4 @@
-package com.gorkemsavran.scenariotests;
+package com.gorkemsavran.scenarioTests;
 
 import com.gorkemsavran.book.controller.request.AddBookRequestDTO;
 import com.gorkemsavran.book.entity.BookCategory;

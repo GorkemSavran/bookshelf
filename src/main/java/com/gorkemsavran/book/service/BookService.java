@@ -11,10 +11,8 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 @Service
 public class BookService {
@@ -38,10 +36,8 @@ public class BookService {
     }
 
     @Transactional
-    public Set<UserBook> getReviewsOfBook(Long id) {
-        return bookDao.get(id).orElseThrow(EntityNotFoundException::new).getReadUsers()
-                .stream().filter(isUserHasRatingAndReview())
-                .collect(Collectors.toSet());
+    public List<UserBook> getReviewsOfBook(Long id) {
+        return bookDao.getReviewsOfBook(id);
     }
 
     private Predicate<UserBook> isUserHasRatingAndReview() {

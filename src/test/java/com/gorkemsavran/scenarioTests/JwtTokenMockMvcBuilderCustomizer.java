@@ -1,4 +1,4 @@
-package com.gorkemsavran.scenariotests;
+package com.gorkemsavran.scenarioTests;
 
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;

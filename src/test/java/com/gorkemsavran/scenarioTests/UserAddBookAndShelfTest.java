@@ -1,6 +1,5 @@
-package com.gorkemsavran.scenariotests;
+package com.gorkemsavran.scenarioTests;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
