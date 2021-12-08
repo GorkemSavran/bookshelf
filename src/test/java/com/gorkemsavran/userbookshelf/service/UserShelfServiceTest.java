@@ -7,8 +7,10 @@ import com.gorkemsavran.common.response.MessageResponse;
 import com.gorkemsavran.common.response.MessageType;
 import com.gorkemsavran.user.entity.Authority;
 import com.gorkemsavran.user.entity.User;
+import com.gorkemsavran.userbookshelf.dao.ShelfDao;
 import com.gorkemsavran.userbookshelf.entity.Shelf;
-import com.gorkemsavran.userbookshelf.entity.UserBook;
+import com.gorkemsavran.userbookshelf.exception.UserHasNotThisBookException;
+import com.gorkemsavran.userbookshelf.exception.UserHasNotThisShelfException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +21,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -33,6 +36,9 @@ class UserShelfServiceTest {
     @Mock
     BookDao bookDao;
 
+    @Mock
+    ShelfDao shelfDao;
+
     @InjectMocks
     UserShelfService userShelfService;
 
@@ -40,6 +46,7 @@ class UserShelfServiceTest {
     Shelf shelf1;
     Shelf shelf2;
     Book book;
+    Book book2;
 
     @BeforeEach
     void setUp() {
@@ -53,13 +60,16 @@ class UserShelfServiceTest {
         shelf2 = new Shelf(fakeUser, "shelf2");
 
         book = new Book("book", "author", BookCategory.ADVENTURE, LocalDate.MAX, "publisher");
-        shelf1.getBooks().add(book);
+        book2 = new Book("book2", "author2", BookCategory.ADVENTURE, LocalDate.MAX, "publisher2");
         ReflectionTestUtils.setField(shelf1, "id", 1L);
         ReflectionTestUtils.setField(shelf2, "id", 2L);
         ReflectionTestUtils.setField(book, "id", 1L);
-        fakeUser.getShelves().add(shelf1);
-        fakeUser.getShelves().add(shelf2);
-        fakeUser.getUserBooks().add(new UserBook(fakeUser, book, null, null));
+        ReflectionTestUtils.setField(book2, "id", 2L);
+        ReflectionTestUtils.setField(fakeUser, "id", 1L);
+        shelf1.addBook(book);
+        fakeUser.addShelf(shelf1);
+        fakeUser.addShelf(shelf2);
+        fakeUser.addBook(book);
     }
 
     @Test
@@ -71,6 +81,7 @@ class UserShelfServiceTest {
 
     @Test
     void getUserShelfBooks() {
+        given(shelfDao.getBooksOfShelf(anyLong(), anyLong())).willReturn(Optional.of(Arrays.asList(book)));
         List<Book> userShelfBooks = userShelfService.getUserShelfBooks(fakeUser, 1L);
 
         assertEquals("book", userShelfBooks.get(0).getName());
@@ -79,6 +90,7 @@ class UserShelfServiceTest {
 
     @Test
     void getUserShelfBooks_throwException() {
+        given(shelfDao.getBooksOfShelf(anyLong(), anyLong())).willThrow(EntityNotFoundException.class);
         assertThrows(EntityNotFoundException.class, () -> userShelfService.getUserShelfBooks(fakeUser, 3L));
     }
 
@@ -92,51 +104,51 @@ class UserShelfServiceTest {
 
     @Test
     void deleteShelf() {
+        given(shelfDao.get(anyLong())).willReturn(Optional.ofNullable(shelf2));
+
         MessageResponse messageResponse = userShelfService.deleteShelf(fakeUser, 2L);
 
         assertEquals(MessageType.SUCCESS, messageResponse.getMessageType());
         assertEquals("Shelf successfuly deleted", messageResponse.getMessage());
-        assertEquals(1, fakeUser.getShelves().size());
     }
 
     @Test
     void deleteShelf_shelfNotExist() {
-        MessageResponse messageResponse = userShelfService.deleteShelf(fakeUser, 3L);
+        given(shelfDao.get(anyLong())).willReturn(Optional.empty());
 
-        assertEquals(MessageType.ERROR, messageResponse.getMessageType());
-        assertEquals("Shelf does not exist", messageResponse.getMessage());
-        assertEquals(2, fakeUser.getShelves().size());
+        assertThrows(EntityNotFoundException.class, () -> userShelfService.deleteShelf(fakeUser, 3L));
     }
 
     @Test
     void addBookToShelf() {
+        given(bookDao.get(anyLong())).willReturn(Optional.ofNullable(book));
+        given(shelfDao.get(anyLong())).willReturn(Optional.ofNullable(shelf2));
+
         MessageResponse messageResponse = userShelfService.addBookToShelf(fakeUser, 2L, 1L);
 
         assertEquals(MessageType.SUCCESS, messageResponse.getMessageType());
         assertEquals("Book successfuly added to shelf", messageResponse.getMessage());
-        assertEquals(1, shelf2.getBooks().size());
     }
 
     @Test
     void addBookToShelf_bookNotInUsersBook() {
-        MessageResponse messageResponse = userShelfService.addBookToShelf(fakeUser, 2L, 2L);
+        given(bookDao.get(anyLong())).willReturn(Optional.ofNullable(book2));
 
-        assertEquals(MessageType.ERROR, messageResponse.getMessageType());
-        assertEquals("Book could not found in user's books", messageResponse.getMessage());
-        assertEquals(0, shelf2.getBooks().size());
+        assertThrows(UserHasNotThisBookException.class, () -> userShelfService.addBookToShelf(fakeUser, 2L, 2L));
     }
 
     @Test
     void addBookToShelf_shelfNotExist() {
-        MessageResponse messageResponse = userShelfService.addBookToShelf(fakeUser, 3L, 1L);
+        given(bookDao.get(anyLong())).willReturn(Optional.ofNullable(book));
+        given(shelfDao.get(anyLong())).willReturn(Optional.ofNullable(new Shelf(null, "nullshelf")));
 
-        assertEquals(MessageType.ERROR, messageResponse.getMessageType());
-        assertEquals("Shelf does not exist", messageResponse.getMessage());
+        assertThrows(UserHasNotThisShelfException.class, () -> userShelfService.addBookToShelf(fakeUser, 3L, 1L));
     }
 
     @Test
     void deleteBookFromShelf() {
         given(bookDao.get(anyLong())).willReturn(Optional.ofNullable(book));
+        given(shelfDao.get(anyLong())).willReturn(Optional.ofNullable(shelf1));
 
         MessageResponse messageResponse = userShelfService.deleteBookFromShelf(fakeUser, 1L, 1L);
 
@@ -149,19 +161,14 @@ class UserShelfServiceTest {
     void deleteBookFromShelf_bookNotExist() {
         given(bookDao.get(anyLong())).willReturn(Optional.empty());
 
-        MessageResponse messageResponse = userShelfService.deleteBookFromShelf(fakeUser, 1L, 2L);
-
-        assertEquals(MessageType.ERROR, messageResponse.getMessageType());
-        assertEquals("Book does not exist", messageResponse.getMessage());
+        assertThrows(EntityNotFoundException.class, () -> userShelfService.deleteBookFromShelf(fakeUser, 1L, 2L));
     }
 
     @Test
     void deleteBookFromShelf_shelfNotExist() {
         given(bookDao.get(anyLong())).willReturn(Optional.ofNullable(book));
+        given(shelfDao.get(anyLong())).willReturn(Optional.empty());
 
-        MessageResponse messageResponse = userShelfService.deleteBookFromShelf(fakeUser, 3L, 1L);
-
-        assertEquals(MessageType.ERROR, messageResponse.getMessageType());
-        assertEquals("Shelf does not exist", messageResponse.getMessage());
+        assertThrows(EntityNotFoundException.class, () -> userShelfService.deleteBookFromShelf(fakeUser, 3L, 1L));
     }
 }
