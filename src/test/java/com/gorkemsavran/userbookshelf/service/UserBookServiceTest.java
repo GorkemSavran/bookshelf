@@ -8,6 +8,7 @@ import com.gorkemsavran.common.response.MessageType;
 import com.gorkemsavran.user.entity.Authority;
 import com.gorkemsavran.user.entity.User;
 import com.gorkemsavran.userbookshelf.controller.request.AddReviewAndRatingDTO;
+import com.gorkemsavran.userbookshelf.dao.UserBookDao;
 import com.gorkemsavran.userbookshelf.entity.UserBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,12 +19,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -34,12 +35,16 @@ class UserBookServiceTest {
     @Mock
     BookDao bookDao;
 
+    @Mock
+    UserBookDao userBookDao;
+
     @InjectMocks
     UserBookService userBookService;
 
     User fakeUser;
     Book book1;
     Book book2;
+    Book book3;
 
     @BeforeEach
     void setUp() {
@@ -49,11 +54,14 @@ class UserBookServiceTest {
                 Authority.ROLE_USER,
                 "email"
         );
+        ReflectionTestUtils.setField(fakeUser, "id", 1L);
         HashSet<UserBook> userBooks = new HashSet<>();
         book1 = new Book();
         book2 = new Book();
+        book3 = new Book();
         ReflectionTestUtils.setField(book1, "id", 1L);
         ReflectionTestUtils.setField(book2, "id", 2L);
+        ReflectionTestUtils.setField(book3, "id", 3L);
 
         UserBook userBook = new UserBook(fakeUser, book1, "review", 1.0);
         UserBook userBookWithoutReview = new UserBook(fakeUser, book2, null, null);
@@ -78,6 +86,8 @@ class UserBookServiceTest {
 
     @Test
     void getUserReviews() {
+        given(bookDao.getReviewsOfUser(anyLong())).willReturn(Arrays.asList(new UserBook(fakeUser, book1, "review", 1.0)));
+
         List<UserBook> userReviews = userBookService.getUserReviews(fakeUser);
 
         assertEquals(1, userReviews.size());
@@ -145,7 +155,6 @@ class UserBookServiceTest {
 
         assertEquals(MessageType.SUCCESS, messageResponse.getMessageType());
         assertEquals("Review and rating added successfuly!", messageResponse.getMessage());
-        assertEquals("review-update", ((UserBook) fakeUser.getUserBooks().toArray()[1]).getReview());
         then(bookDao).should().get(anyLong());
     }
 
@@ -160,13 +169,12 @@ class UserBookServiceTest {
 
         assertEquals(MessageType.ERROR, messageResponse.getMessageType());
         assertEquals("Book does not exist!", messageResponse.getMessage());
-        assertNotEquals("review-update", ((UserBook) fakeUser.getUserBooks().toArray()[1]).getReview());
         then(bookDao).should().get(anyLong());
     }
 
     @Test
     void addReviewAndRatingToBook_userNotHaveThisBook() {
-        given(bookDao.get(anyLong())).willReturn(Optional.ofNullable(book2));
+        given(bookDao.get(anyLong())).willReturn(Optional.ofNullable(book3));
         AddReviewAndRatingDTO addReviewAndRatingDTO = new AddReviewAndRatingDTO();
         addReviewAndRatingDTO.setReview("review-update");
         addReviewAndRatingDTO.setRating(1.0);
@@ -175,7 +183,6 @@ class UserBookServiceTest {
 
         assertEquals(MessageType.ERROR, messageResponse.getMessageType());
         assertEquals("User does not have this book!", messageResponse.getMessage());
-        assertNotEquals("review-update", ((UserBook) fakeUser.getUserBooks().toArray()[1]).getReview());
         then(bookDao).should().get(anyLong());
     }
 }
