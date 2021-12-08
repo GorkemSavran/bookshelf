@@ -5,7 +5,6 @@ import com.gorkemsavran.book.entity.Book;
 import com.gorkemsavran.common.aspect.PersistUser;
 import com.gorkemsavran.common.response.MessageResponse;
 import com.gorkemsavran.common.response.MessageType;
-import com.gorkemsavran.user.dao.UserDao;
 import com.gorkemsavran.user.entity.User;
 import com.gorkemsavran.userbookshelf.dao.ShelfDao;
 import com.gorkemsavran.userbookshelf.entity.Shelf;
@@ -19,14 +18,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 @Service
 public class UserShelfService {
 
     private final BookDao bookDao;
+    private final ShelfDao shelfDao;
 
-    public UserShelfService(BookDao bookDao) {
+    public UserShelfService(BookDao bookDao, ShelfDao shelfDao) {
         this.bookDao = bookDao;
+        this.shelfDao = shelfDao;
     }
 
     @Transactional
@@ -38,8 +40,11 @@ public class UserShelfService {
     @Transactional
     @PersistUser
     public List<Book> getUserShelfBooks(User user, Long shelfId) {
-        Shelf shelf = user.getShelves().stream().filter(isShelfEquals(shelfId)).findFirst().orElseThrow(EntityNotFoundException::new);
-        return new ArrayList<>(shelf.getBooks());
+        return shelfDao.getBooksOfShelf(user.getId(), shelfId).orElseThrow(shelfNotFound());
+    }
+
+    private Supplier<EntityNotFoundException> shelfNotFound() {
+        return () -> new EntityNotFoundException("Shelf not found!");
     }
 
     private Predicate<Shelf> isShelfEquals(Long shelfId) {
