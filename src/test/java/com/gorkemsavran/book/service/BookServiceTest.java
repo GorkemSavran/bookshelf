@@ -38,6 +38,7 @@ class BookServiceTest {
     BookService bookService;
 
     Book exampleBook;
+    User user;
 
     @BeforeEach
     void setUp() {
@@ -48,7 +49,7 @@ class BookServiceTest {
                 LocalDate.MAX,
                 "publisher"
         );
-        User user = new User("username", "password", Authority.ROLE_USER, "email");
+        user = new User("username", "password", Authority.ROLE_USER, "email");
         UserBook userBook = new UserBook(user, exampleBook, "review", 1.0);
         HashSet<UserBook> readUsers = new HashSet<>();
         readUsers.add(userBook);
@@ -85,20 +86,12 @@ class BookServiceTest {
 
     @Test
     void getReviewsOfBook() {
-        given(bookDao.get(anyLong())).willReturn(Optional.ofNullable(exampleBook));
+        given(bookDao.getReviewsOfBook(anyLong())).willReturn(Arrays.asList(new UserBook(user, exampleBook)));
 
         List<UserBook> reviewsOfBook = bookService.getReviewsOfBook(1L);
 
         assertEquals(1, reviewsOfBook.size());
-        then(bookDao).should().get(anyLong());
-    }
-
-    @Test
-    void getReviewsOfBook_bookNotFound() {
-        given(bookDao.get(anyLong())).willThrow(new EntityNotFoundException());
-
-        assertThrows(EntityNotFoundException.class, () -> bookService.getReviewsOfBook(1L));
-        then(bookDao).should().get(anyLong());
+        then(bookDao).should().getReviewsOfBook(anyLong());
     }
 
     @Test
