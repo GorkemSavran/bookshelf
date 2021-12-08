@@ -13,12 +13,13 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import static com.gorkemsavran.userbookshelf.checker.UserShelfServiceCheckers.*;
 
 @Service
 public class UserShelfService {
@@ -47,10 +48,6 @@ public class UserShelfService {
         return () -> new EntityNotFoundException("Shelf not found!");
     }
 
-    private Predicate<Shelf> isShelfEquals(Long shelfId) {
-        return shelf -> shelf.getId().equals(shelfId);
-    }
-
     @Transactional
     @PersistUser
     public MessageResponse addShelf(User user, String name) {
@@ -61,48 +58,47 @@ public class UserShelfService {
     @Transactional
     @PersistUser
     public MessageResponse deleteShelf(User user, Long shelfId) {
-        Optional<Shelf> optionalShelf = shelfDao.get(shelfId);
-        if (!optionalShelf.isPresent())
-            return new MessageResponse("Shelf does not exist", MessageType.ERROR);
-
-        Shelf shelf = optionalShelf.get();
-        if (!user.hasShelf(shelf))
-            return new MessageResponse("User does not have this shelf!", MessageType.ERROR);
+        Shelf shelf = getShelf(shelfId);
+        checkUserHasShelf(user, shelf);
 
         user.removeShelf(shelf);
         return new MessageResponse("Shelf successfuly deleted", MessageType.SUCCESS);
     }
 
+    private Shelf getShelf(Long shelfId) {
+        return shelfDao.get(shelfId).orElseThrow(shelfNotFound());
+    }
+
     @Transactional
     @PersistUser
     public MessageResponse addBookToShelf(User user, Long shelfId, Long bookId) {
-        Optional<UserBook> optionalBook = user.getUserBooks()
-                .stream().filter(isUserBookEquals(bookId)).findFirst();
-        if (!optionalBook.isPresent())
-            return new MessageResponse("Book could not found in user's books", MessageType.ERROR);
-        Optional<Shelf> optionalShelf = user.getShelves().stream().filter(isShelfEquals(shelfId)).findFirst();
-        if (!optionalShelf.isPresent())
-            return new MessageResponse("Shelf does not exist", MessageType.ERROR);
+        Book book = getBook(bookId);
+        checkUserHasBook(user, book);
+        Shelf shelf = getShelf(shelfId);
+        checkUserHasShelf(user, shelf);
 
-        optionalShelf.get().getBooks().add(optionalBook.get().getBook());
+        shelf.addBook(book);
         return new MessageResponse("Book successfuly added to shelf", MessageType.SUCCESS);
     }
 
-    private Predicate<UserBook> isUserBookEquals(Long bookId) {
-        return userBook -> userBook.getBook().getId().equals(bookId);
+    private Book getBook(Long bookId) {
+        return bookDao.get(bookId).orElseThrow(bookNotFound());
+    }
+
+    private Supplier<EntityNotFoundException> bookNotFound() {
+        return () -> new EntityNotFoundException("Book not found!");
     }
 
     @Transactional
     @PersistUser
     public MessageResponse deleteBookFromShelf(User user, Long shelfId, Long bookId) {
-        Optional<Book> optionalBook = bookDao.get(bookId);
-        if (!optionalBook.isPresent())
-            return new MessageResponse("Book does not exist", MessageType.ERROR);
-        Optional<Shelf> optionalShelf = user.getShelves().stream().filter(isShelfEquals(shelfId)).findFirst();
-        if (!optionalShelf.isPresent())
-            return new MessageResponse("Shelf does not exist", MessageType.ERROR);
+        Book book = getBook(bookId);
+        Shelf shelf = getShelf(shelfId);
+        checkUserHasBook(user, book);
+        checkUserHasShelf(user, shelf);
+        checkShelfHasBook(shelf, book);
 
-        optionalShelf.get().getBooks().remove(optionalBook.get());
+        shelf.removeBook(book);
         return new MessageResponse("Book successfuly removed from shelf", MessageType.SUCCESS);
     }
 }

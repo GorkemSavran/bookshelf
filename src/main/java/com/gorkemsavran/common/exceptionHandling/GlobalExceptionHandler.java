@@ -31,4 +31,9 @@ public class GlobalExceptionHandler {
         return ex.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
     }
 
+    @ExceptionHandler(value = {RuntimeException.class})
+    protected ResponseEntity<MessageResponse> handleRuntimeExceptions(RuntimeException ex) {
+        return ResponseEntity.status(200).body(new MessageResponse(ex.getMessage(), MessageType.ERROR));
+    }
+
 }

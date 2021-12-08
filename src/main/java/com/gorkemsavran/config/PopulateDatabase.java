@@ -35,38 +35,38 @@ public class PopulateDatabase {
 
     @PostConstruct
     public void init() {
-        User admin = new User(
-                "admin",
-                "admin",
-                Authority.ROLE_ADMIN,
-                "admin@gmail.com"
-        );
-        User user = new User(
-                "user",
-                "user",
-                Authority.ROLE_USER,
-                "user@gmail.com"
-        );
-        Book book1 = new Book(
-                "book1",
-                "author1",
-                BookCategory.ADVENTURE,
-                LocalDate.parse("2021-11-11"),
-                "publisher1"
-        );
-
-        Book book2 = new Book(
-                "book2",
-                "author2",
-                BookCategory.ADVENTURE,
-                LocalDate.parse("2021-11-12"),
-                "publisher2"
-        );
-
-        bookService.addBook(book1);
-        bookService.addBook(book2);
-        userService.addUser(admin);
-        userService.addUser(user);
+//        User admin = new User(
+//                "admin",
+//                "admin",
+//                Authority.ROLE_ADMIN,
+//                "admin@gmail.com"
+//        );
+//        User user = new User(
+//                "user",
+//                "user",
+//                Authority.ROLE_USER,
+//                "user@gmail.com"
+//        );
+//        Book book1 = new Book(
+//                "book1",
+//                "author1",
+//                BookCategory.ADVENTURE,
+//                LocalDate.parse("2021-11-11"),
+//                "publisher1"
+//        );
+//
+//        Book book2 = new Book(
+//                "book2",
+//                "author2",
+//                BookCategory.ADVENTURE,
+//                LocalDate.parse("2021-11-12"),
+//                "publisher2"
+//        );
+//
+//        bookService.addBook(book1);
+//        bookService.addBook(book2);
+//        userService.addUser(admin);
+//        userService.addUser(user);
 
 //        AddReviewAndRatingDTO addReviewAndRatingDTO = new AddReviewAndRatingDTO();
 //        addReviewAndRatingDTO.setReview("review");

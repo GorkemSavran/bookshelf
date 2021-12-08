@@ -32,6 +32,18 @@ public class Shelf {
         this.name = name;
     }
 
+    public void addBook(Book book) {
+        books.add(book);
+    }
+
+    public void removeBook(Book book) {
+        books.remove(book);
+    }
+
+    public boolean hasBook(Book book) {
+        return books.contains(book);
+    }
+
     public Long getId() {
         return id;
     }
