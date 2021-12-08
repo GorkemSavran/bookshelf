@@ -40,10 +40,6 @@ public class BookService {
         return bookDao.getReviewsOfBook(id);
     }
 
-    private Predicate<UserBook> isUserHasRatingAndReview() {
-        return userBook -> userBook.getRating() != null && userBook.getReview() != null;
-    }
-
     @Transactional
     public MessageResponse addBook(Book book) {
         if (isExistsByNameAuthorAndPublishDate(book))

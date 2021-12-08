@@ -36,12 +36,7 @@ public class UserBookService {
     @Transactional
     @PersistUser
     public List<UserBook> getUserReviews(User user) {
-        return user.getUserBooks().stream().filter(this::existUserBookReview)
-                .collect(Collectors.toList());
-    }
-
-    private boolean existUserBookReview(UserBook userBook) {
-        return userBook.getReview() != null && userBook.getRating() != null;
+        return bookDao.getReviewsOfUser(user.getId());
     }
 
     @Transactional

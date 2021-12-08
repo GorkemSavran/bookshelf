@@ -74,13 +74,29 @@ public class BookDao implements IDao<Book> {
         return !books.isEmpty();
     }
 
-    public List<UserBook> getReviewsOfBook(Long id) {
+    public List<UserBook> getReviewsOfUser(Long userId) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<UserBook> criteriaBuilderQuery = criteriaBuilder.createQuery(UserBook.class);
 
         Root<UserBook> userBookRoot = criteriaBuilderQuery.from(UserBook.class);
         criteriaBuilderQuery.where(
-                isBookIdEquals(id, criteriaBuilder, userBookRoot),
+                isUserIdEquals(userId, criteriaBuilder, userBookRoot),
+                hasReview(criteriaBuilder, userBookRoot),
+                hasRating(criteriaBuilder, userBookRoot)
+        );
+
+        return entityManager
+                .createQuery(criteriaBuilderQuery)
+                .getResultList();
+    }
+
+    public List<UserBook> getReviewsOfBook(Long bookId) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<UserBook> criteriaBuilderQuery = criteriaBuilder.createQuery(UserBook.class);
+
+        Root<UserBook> userBookRoot = criteriaBuilderQuery.from(UserBook.class);
+        criteriaBuilderQuery.where(
+                isBookIdEquals(bookId, criteriaBuilder, userBookRoot),
                 hasReview(criteriaBuilder, userBookRoot),
                 hasRating(criteriaBuilder, userBookRoot)
         );
@@ -100,5 +116,9 @@ public class BookDao implements IDao<Book> {
 
     private Predicate isBookIdEquals(Long id, CriteriaBuilder criteriaBuilder, Root<UserBook> userBookRoot) {
         return criteriaBuilder.equal(userBookRoot.get("userBookKey").get("bookId"), id);
+    }
+
+    private Predicate isUserIdEquals(Long id, CriteriaBuilder criteriaBuilder, Root<UserBook> userBookRoot) {
+        return criteriaBuilder.equal(userBookRoot.get("userBookKey").get("userId"), id);
     }
 }

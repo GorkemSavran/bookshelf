@@ -25,26 +25,22 @@ public class UserBookController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('USER')")
     public List<UserBookResponseDTO> getUserBooks(UsernamePasswordAuthenticationToken authentication) {
         return userBookService.getUserBooks((User) authentication.getPrincipal())
                 .stream().map(UserBookResponseDTO::new).collect(Collectors.toList());
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('USER')")
     public MessageResponse addBookToUserBooks(UsernamePasswordAuthenticationToken authentication, @RequestParam Long bookId) {
         return userBookService.addBookToUserBooks((User) authentication.getPrincipal(), bookId);
     }
 
     @DeleteMapping
-    @PreAuthorize("hasRole('USER')")
     public MessageResponse removeBookFromUserBooks(UsernamePasswordAuthenticationToken authentication, @RequestParam Long bookId) {
         return userBookService.removeBookFromUserBooks((User) authentication.getPrincipal(), bookId);
     }
 
     @PostMapping("/add-review")
-    @PreAuthorize("hasRole('USER')")
     public MessageResponse addReviewAndRatingToBook(UsernamePasswordAuthenticationToken authentication,
                                                     @Valid @RequestBody AddReviewAndRatingDTO addReviewAndRatingDTO,
                                                     @RequestParam Long bookId) {
@@ -52,7 +48,6 @@ public class UserBookController {
     }
 
     @GetMapping("/reviews")
-    @PreAuthorize("hasRole('USER')")
     public List<UserBookReviewResponseDTO> getUserReviews(UsernamePasswordAuthenticationToken authentication) {
         return userBookService
                 .getUserReviews((User) authentication.getPrincipal())

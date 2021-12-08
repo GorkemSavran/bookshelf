@@ -23,7 +23,6 @@ public class UserShelfController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('USER')")
     public List<Long> getUserShelves(UsernamePasswordAuthenticationToken authentication) {
         return userShelfService
                 .getUserShelfs((User) authentication.getPrincipal())
@@ -33,27 +32,23 @@ public class UserShelfController {
     }
 
     @GetMapping("/{shelfId}")
-    @PreAuthorize("hasRole('USER')")
     public UserShelfResponseDTO getUserShelf(UsernamePasswordAuthenticationToken authentication,
                                              @PathVariable Long shelfId) {
         return new UserShelfResponseDTO(shelfId, userShelfService.getUserShelfBooks((User) authentication.getPrincipal(), shelfId));
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('USER')")
     public MessageResponse addShelf(UsernamePasswordAuthenticationToken authentication, @RequestParam String name) {
         return userShelfService.addShelf((User) authentication.getPrincipal(), name);
     }
 
     @DeleteMapping("/{shelfId}")
-    @PreAuthorize("hasRole('USER')")
     public MessageResponse deleteShelf(UsernamePasswordAuthenticationToken authentication,
                                        @PathVariable Long shelfId) {
         return userShelfService.deleteShelf((User) authentication.getPrincipal(), shelfId);
     }
 
     @PostMapping("/{shelfId}/book/{bookId}")
-    @PreAuthorize("hasRole('USER')")
     public MessageResponse addBookToShelf(UsernamePasswordAuthenticationToken authentication,
                                           @PathVariable Long shelfId,
                                           @PathVariable Long bookId) {
@@ -61,7 +56,6 @@ public class UserShelfController {
     }
 
     @DeleteMapping("/{shelfId}/book/{bookId}")
-    @PreAuthorize("hasRole('USER')")
     public MessageResponse deleteBookFromShelf(UsernamePasswordAuthenticationToken authentication,
                                           @PathVariable Long shelfId,
                                           @PathVariable Long bookId) {
